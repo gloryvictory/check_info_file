@@ -4,12 +4,12 @@ from time import strftime   # Load just the strftime Module from Time
 file_csv = str(strftime("%Y-%m-%d") + "_from_csv" + ".csv")
 file_log = str(strftime("%Y-%m-%d") + "_from_csv" + ".log")
 
-folder_win_in = 'E:\\TEMP\\CSV\\'
+folder_win_in = 'E:\\Temp\\geodex_test'
 folder_linux_in = '/Users/glory/projects/geodex_test'
 #folder_linux_in = '/Users/glory/Desktop/Dropbox/MyPrj/GitHubProjects/udata_load/examples/in'
 
 
-folder_win_out = 'E:\\TEMP\\CSV_OUT\\'
+folder_win_out = 'E:\\TEMP\\info.doc\\'
 folder_linux_out = '/Users/glory/projects/geodex_test/out'
 
 
