@@ -189,7 +189,8 @@ def get_list_csv_dir(dir_input=''):
                 file_name = file.lower()
 
 
-                if os.path.isfile(file_path) and file_name.startswith('info') and  file_path.endswith('doc'):     #ext == "csv":
+                if os.path.isfile(file_path) and file_name.startswith('info.doc'):     #ext == "csv":
+                    print(file_path)
                     listdir.append(file_path)
     except Exception as e:
         print("Exception occurred get_list_csv_dir" + str(e))
