@@ -45,5 +45,6 @@ csv_delimiter = ';'
 csv_dict = {'FULLNAME': '',
                 'NAME': '',
                 'DISK': '',
-                'CNT': ''
+                'CNT': '',
+                'COLUMNS': ''
                 }

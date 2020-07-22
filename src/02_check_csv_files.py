@@ -128,13 +128,10 @@ def get_file_name_without_extension(path=''):
     #return path.split('\\').pop().split('/').pop().rsplit(get_extension(path), 1)[0]
 
 
-
 def rawincount(filename):
     f = open(filename, 'rb')
     bufgen = takewhile(lambda x: x, (f.raw.read(1024*1024) for _ in repeat(None)))
     return sum(buf.count(b'\n') for buf in bufgen)
-
-
 
 
 def csv_file_out_create():
@@ -199,11 +196,12 @@ def do_csv_file_in_dir_out_csv(filename_with_path='', dir_out=''):
     #csv_dict['DISK'] = file_name.split('-')[1]
     csv_dict['CNT'] = rawincount(filename_with_path)
 
-    with open(file_csv, 'a', newline='', encoding='utf-8') as csv_file:  # Just use 'w' mode in 3.x
+    with open(file_csv, 'w', newline='\n', encoding='utf-8') as csv_file:  # Just use 'w' mode in 3.x
         csv_file_open = csv.DictWriter(csv_file, csv_dict.keys(), delimiter=cfg.csv_delimiter)
         try:
             print(csv_dict['FULLNAME'])
             csv_file_open.writerow(csv_dict)
+
         except Exception as e:
             print("Exception occurred " + str(e))  # , exc_info=True
 
@@ -211,12 +209,12 @@ def do_csv_file_in_dir_out_csv(filename_with_path='', dir_out=''):
 ##let try multithreading
 
 def do_multithreading(dir_input=''):
-
     list_csv = get_list_csv_dir(dir_input)
     dir_out = get_output_directory()
     for f in list_csv:
         do_csv_file_in_dir_out_csv(f,dir_out)
-
+    # do_csv_file_in_dir_out_csv(list_csv[1], dir_out)
+    # do_csv_file_in_dir_out_csv(list_csv[2], dir_out)
 
     # try:
     #     from multiprocessing import Pool
