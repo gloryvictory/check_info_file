@@ -9,7 +9,7 @@ folder_in_win = 'Z:\\'
 folder_in_linux = '/Users/glory/projects/CSV_ALL'
 
 folder_out_win = 'E:\\TEMP\\info.doc\\'
-folder_out_linux = '/Users/glory/projects/CSV_ALL/out'
+folder_out_linux = '/Users/glory/projects/out'
 
 
 # host = 'localhost'
@@ -42,5 +42,8 @@ csv_delimiter = ';'
 #             'TEXTLESS': '',
 #             'LASTUPDATE': ''}
 
-csv_dict = {'FOLDER': '',
-            'LASTUPDATE': ''}
+csv_dict = {'FULLNAME': '',
+                'NAME': '',
+                'DISK': '',
+                'CNT': ''
+                }

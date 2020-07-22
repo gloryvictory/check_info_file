@@ -132,54 +132,24 @@ def get_file_name_without_extension(path=''):
 def rawincount(filename):
     f = open(filename, 'rb')
     bufgen = takewhile(lambda x: x, (f.raw.read(1024*1024) for _ in repeat(None)))
-    return sum( buf.count(b'\n') for buf in bufgen )
+    return sum(buf.count(b'\n') for buf in bufgen)
 
 
 
-'''
-    Do many csv files and make one csv file big
-'''
-def do_csv_file_in_dir_out_csv(filename_with_path=''):
-    csv_dict = {'FULLNAME': '',
-                'NAME': '',
-                'CNT': ''
-                }
 
-    file_csv = str(os.path.join(get_output_directory(), cfg.file_csv))
-    #file_name = filename_with_path.split('.')[0]
-    file_name = get_file_name_with_extension(filename_with_path)
-    #csv_dict = cfg.csv_dict
-    for key in csv_dict:
-        csv_dict[key] = ''
-    # csv_dict['DATA_SCRIPT_RUN'] = str(time.strftime("%Y-%m-%d"))
-    csv_dict['FULLNAME'] = filename_with_path
-    csv_dict['NAME'] = file_name.split('-')[0]
-    csv_dict['CNT'] = rawincount(filename_with_path)
-
-    with open(file_csv, 'a', newline='', encoding='utf-8') as csv_file:  # Just use 'w' mode in 3.x
-        csv_file_open = csv.DictWriter(csv_file, csv_dict.keys(), delimiter=cfg.csv_delimiter)
-
-        try:
-            print(csv_dict['FULLNAME'])
-            csv_file_open.writerow(csv_dict)
-        except Exception as e:
-            print("Exception occurred " + str(e))  # , exc_info=True
-
-
-def get_list_csv_dir(dir_input=''):
-    csv_dict = {'FULLNAME': '',
-                'NAME': '',
-                'CNT': ''
-                }
-    listdir = []
+def csv_file_out_create():
+    csv_dict = cfg.csv_dict
+    file_csv = str(os.path.join(get_output_directory(), cfg.file_csv))  # from cfg.file
     # Если выходной CSV файл существует - удаляем его
-    file_csv = str(os.path.join(get_output_directory(), cfg.file_csv)) # from cfg.file
     if os.path.isfile(file_csv):
         os.remove(file_csv)
-
     with open(file_csv, 'w', newline='', encoding='utf-8') as csv_file:  # Just use 'w' mode in 3.x
         csv_file_open = csv.DictWriter(csv_file, csv_dict.keys(), delimiter=cfg.csv_delimiter)
         csv_file_open.writeheader()
+
+
+def get_list_csv_dir(dir_input=''):
+    listdir = []
     try:
         for root, subdirs, files in os.walk(dir_input):
             for file in os.listdir(root):
@@ -187,15 +157,55 @@ def get_list_csv_dir(dir_input=''):
                 #.lower() - под линуксом есть разница!!!
                 ext = '.'.join(file.split('.')[1:]).lower()
                 file_name = file.lower()
-
-
                 if os.path.isfile(file_path) and file_name.endswith('.csv'):     #ext == "csv":
-                    print(file_path)
+                    #print(file_path)
                     listdir.append(file_path)
     except Exception as e:
-        print("Exception occurred get_list_csv_dir" + str(e))
-
+        ss = "Exception occurred get_list_csv_dir" + str(e)
+        print(ss)
+        logging.error(ss)
     return listdir
+
+
+'''
+    Do many csv files and make one csv file big
+'''
+def do_csv_file_in_dir_out_csv(filename_with_path='', dir_out=''):
+    csv_dict = cfg.csv_dict
+
+    file_csv = str(os.path.join(dir_out, cfg.file_csv))
+    #file_name = filename_with_path.split('.')[0]
+    file_name = get_file_name_with_extension(filename_with_path)
+    #csv_dict = cfg.csv_dict
+    for key in csv_dict:
+        csv_dict[key] = ''
+    # csv_dict['DATA_SCRIPT_RUN'] = str(time.strftime("%Y-%m-%d"))
+    csv_dict['FULLNAME'] = filename_with_path
+
+    name_comp = file_name.split('-')[0]
+
+    if len(str(name_comp)) > 0:
+
+        csv_dict['NAME'] = name_comp
+    else:
+        csv_dict['NAME'] = 'UNDEFINED!!!'
+
+    name_disk = file_name.split('-')[1]
+    if len(str(name_disk)) > 0:
+        csv_dict['DISK'] = name_disk
+    else:
+        csv_dict['DISK'] = 'UNDEFINED!!!'
+
+    #csv_dict['DISK'] = file_name.split('-')[1]
+    csv_dict['CNT'] = rawincount(filename_with_path)
+
+    with open(file_csv, 'a', newline='', encoding='utf-8') as csv_file:  # Just use 'w' mode in 3.x
+        csv_file_open = csv.DictWriter(csv_file, csv_dict.keys(), delimiter=cfg.csv_delimiter)
+        try:
+            print(csv_dict['FULLNAME'])
+            csv_file_open.writerow(csv_dict)
+        except Exception as e:
+            print("Exception occurred " + str(e))  # , exc_info=True
 
 
 ##let try multithreading
@@ -203,6 +213,10 @@ def get_list_csv_dir(dir_input=''):
 def do_multithreading(dir_input=''):
 
     list_csv = get_list_csv_dir(dir_input)
+    dir_out = get_output_directory()
+    for f in list_csv:
+        do_csv_file_in_dir_out_csv(f,dir_out)
+
 
     # try:
     #     from multiprocessing import Pool
@@ -214,9 +228,6 @@ def do_multithreading(dir_input=''):
     #          p.map(do_csv_file_in_dir_out_csv, list_csv)
     # except Exception as e:
     #     print("Exception occurred do_multithreading" + str(e))
-
-    for f in list_csv:
-        do_csv_file_in_dir_out_csv(f)
 
     # #map(save_file_html_by_url, url_list)
 
@@ -239,7 +250,7 @@ def main():
     print('Starting at :' + str(time1))
 
     dir_input = get_input_directory()
-
+    csv_file_out_create()
     do_log_file()
 
     do_multithreading(dir_input)
