@@ -24,7 +24,7 @@ from datetime import datetime
 import csv
 import codecs
 import logging
-#from itertools import (takewhile,repeat)
+from itertools import (takewhile,repeat)
 
 # non standard packages
 # try:
@@ -82,7 +82,7 @@ def get_output_directory():
     dir_out = str(os.getcwd())
     # Linux platform
     if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
-        dir_out = cfg.folder_linux_out
+        dir_out = cfg.folder_out_linux
         print('Output directory from config file: ' + dir_out)
         if os.path.exists(dir_out) and os.path.isdir(dir_out):
             return dir_out
@@ -154,7 +154,7 @@ def do_csv_file_in_dir_out_csv(filename_with_path=''):
     # csv_dict['DATA_SCRIPT_RUN'] = str(time.strftime("%Y-%m-%d"))
     csv_dict['FULLNAME'] = filename_with_path
     csv_dict['NAME'] = file_name.split('-')[0]
-    csv_dict['CNT'] = '' #rawincount(filename_with_path)
+    csv_dict['CNT'] = rawincount(filename_with_path)
 
     with open(file_csv, 'a', newline='', encoding='utf-8') as csv_file:  # Just use 'w' mode in 3.x
         csv_file_open = csv.DictWriter(csv_file, csv_dict.keys(), delimiter=cfg.csv_delimiter)
@@ -189,7 +189,7 @@ def get_list_csv_dir(dir_input=''):
                 file_name = file.lower()
 
 
-                if os.path.isfile(file_path) and file_name.startswith('info.doc'):     #ext == "csv":
+                if os.path.isfile(file_path) and file_name.endswith('.csv'):     #ext == "csv":
                     print(file_path)
                     listdir.append(file_path)
     except Exception as e:

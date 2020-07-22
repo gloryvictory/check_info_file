@@ -4,21 +4,19 @@ from time import strftime   # Load just the strftime Module from Time
 file_csv = str(strftime("%Y-%m-%d") + "_from_csv" + ".csv")
 file_log = str(strftime("%Y-%m-%d") + "_from_csv" + ".log")
 
-folder_win_in = 'Z:\\'
+folder_in_win = 'Z:\\'
 #folder_win_in = 'E:\\Temp\\geodex_test'
-folder_linux_in = '/Users/glory/projects/geodex_test'
-#folder_linux_in = '/Users/glory/Desktop/Dropbox/MyPrj/GitHubProjects/udata_load/examples/in'
+folder_in_linux = '/Users/glory/projects/CSV_ALL'
+
+folder_out_win = 'E:\\TEMP\\info.doc\\'
+folder_out_linux = '/Users/glory/projects/CSV_ALL/out'
 
 
-folder_win_out = 'E:\\TEMP\\info.doc\\'
-folder_linux_out = '/Users/glory/projects/geodex_test/out'
-
-
-host = 'localhost'
-schema = 'udataschema'
-user = 'udatauser'
-user_password = 'udatauserpassword'
-database = 'udatadb'
+# host = 'localhost'
+# schema = 'udataschema'
+# user = 'udatauser'
+# user_password = 'udatauserpassword'
+# database = 'udatadb'
 # postgresql://udatauser:udatauserpassword@localhost:5432/udatadb
 
 csv_delimiter = ';'
