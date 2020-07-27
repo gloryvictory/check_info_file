@@ -25,6 +25,8 @@ import csv
 import codecs
 import logging
 from itertools import (takewhile,repeat)
+from tqdm import tqdm
+
 #import re
 
 
@@ -167,17 +169,23 @@ def file_csv_get_delim_count(filename):
             row_cownt = 0
             ss = csv_reader.fieldnames
             column_count = str(ss).count(cfg.csv_delimiter)
-            for row in csv_reader:
-                delim_str = str(row).count(cfg.csv_delimiter)
+
+            for row in tqdm(csv_reader):
+                data = str(list(row.values())[0])
+                delim_str = data.count(cfg.csv_delimiter)
 
                 if delim_str > column_count:
                     column_count = delim_str
-                    row_cownt = row_cownt + 1
-                    sss = list(row.values())[0]
-                    print('row is: ' + str(row_cownt) + ': ' + sss)
 
+                    #sss = list(row.values())[0]
+                    strq =  'row is: ' + str(row_cownt) + ': ' + data
+                    print(strq)
+                    logging.info(strq)
+                row_cownt = row_cownt + 1
     except Exception as e:
-        print("Exception occurred " + str(e))  # , exc_info=True
+        strerr = "Exception occurred " + str(e)
+        print(strerr)  # , exc_info=True
+        logging.error(strerr)
     return column_count
 
 
@@ -262,14 +270,14 @@ def do_csv_file_in_dir_out_csv(filename_with_path='', dir_out=''):
 def do_multithreading(dir_input=''):
     list_csv = get_list_csv_dir(dir_input)
     dir_out = get_output_directory()
-    # for f in list_csv:
-    #     do_csv_file_in_dir_out_csv(f,dir_out)
-    do_csv_file_in_dir_out_csv(list_csv[1], dir_out)
-    do_csv_file_in_dir_out_csv(list_csv[2], dir_out)
-    do_csv_file_in_dir_out_csv(list_csv[5], dir_out)
-    do_csv_file_in_dir_out_csv(list_csv[6], dir_out)
-    do_csv_file_in_dir_out_csv(list_csv[27], dir_out)
-    do_csv_file_in_dir_out_csv(list_csv[28], dir_out)
+    for f in list_csv:
+        do_csv_file_in_dir_out_csv(f,dir_out)
+    # do_csv_file_in_dir_out_csv(list_csv[1], dir_out)
+    # do_csv_file_in_dir_out_csv(list_csv[2], dir_out)
+    # do_csv_file_in_dir_out_csv(list_csv[5], dir_out)
+    # do_csv_file_in_dir_out_csv(list_csv[6], dir_out)
+    # do_csv_file_in_dir_out_csv(list_csv[27], dir_out)
+    # do_csv_file_in_dir_out_csv(list_csv[28], dir_out)
 
     # try:
     #     from multiprocessing import Pool
