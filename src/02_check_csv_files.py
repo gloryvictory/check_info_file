@@ -25,6 +25,8 @@ import csv
 import codecs
 import logging
 from itertools import (takewhile,repeat)
+#import re
+
 
 # non standard packages
 # try:
@@ -129,9 +131,56 @@ def get_file_name_without_extension(path=''):
 
 
 def rawincount(filename):
-    f = open(filename, 'rb')
-    bufgen = takewhile(lambda x: x, (f.raw.read(1024*1024) for _ in repeat(None)))
-    return sum(buf.count(b'\n') for buf in bufgen)
+    rowcount = 0
+    try:
+        f = open(filename, 'rb')
+        bufgen = takewhile(lambda x: x, (f.raw.read(1024*1024) for _ in repeat(None)))
+        rowcount = sum(buf.count(b'\n') for buf in bufgen)
+        return rowcount
+    except Exception as e:
+        print("Exception occurred " + str(e))  # , exc_info=True
+    return rowcount
+
+
+def file_csv_get_column_count(filename):
+    column_count = 0
+    try:
+        with open(filename, newline='\n') as csvfile:
+            #csv_reader = csv.reader(csvfile, delimiter=cfg.csv_delimiter)
+            csv_reader = csv.DictReader(csvfile)
+            ss = csv_reader.fieldnames
+            #count = len(re.findall(cfg.csv_delimiter, str(ss)))
+            column_count = str(ss).count(cfg.csv_delimiter)
+            #print(csv_reader.fieldnames)
+            #for row in csv_reader:
+    except Exception as e:
+        print("Exception occurred " + str(e))  # , exc_info=True
+    return column_count
+
+
+def file_csv_get_delim_count(filename):
+    column_count = 0
+    try:
+        with open(filename, newline='\n') as csvfile:
+            csv_reader = csv.DictReader(csvfile)
+            delim_str = 0
+            row_cownt = 0
+            ss = csv_reader.fieldnames
+            column_count = str(ss).count(cfg.csv_delimiter)
+            for row in csv_reader:
+                delim_str = str(row).count(cfg.csv_delimiter)
+
+                if delim_str > column_count:
+                    column_count = delim_str
+                    row_cownt = row_cownt + 1
+                    sss = list(row.values())[0]
+                    print('row is: ' + str(row_cownt) + ': ' + sss)
+
+    except Exception as e:
+        print("Exception occurred " + str(e))  # , exc_info=True
+    return column_count
+
+
 
 
 def csv_file_out_create():
@@ -195,8 +244,10 @@ def do_csv_file_in_dir_out_csv(filename_with_path='', dir_out=''):
 
     #csv_dict['DISK'] = file_name.split('-')[1]
     csv_dict['CNT'] = rawincount(filename_with_path)
+    csv_dict['COLUMNS'] = file_csv_get_column_count(filename_with_path)
+    csv_dict['MAXDELIM'] = file_csv_get_delim_count(filename_with_path)
 
-    with open(file_csv, 'w', newline='\n', encoding='utf-8') as csv_file:  # Just use 'w' mode in 3.x
+    with open(file_csv, 'a', newline='\n', encoding='utf-8') as csv_file:  # Just use 'w' mode in 3.x
         csv_file_open = csv.DictWriter(csv_file, csv_dict.keys(), delimiter=cfg.csv_delimiter)
         try:
             print(csv_dict['FULLNAME'])
@@ -204,17 +255,21 @@ def do_csv_file_in_dir_out_csv(filename_with_path='', dir_out=''):
 
         except Exception as e:
             print("Exception occurred " + str(e))  # , exc_info=True
-
+        csv_file.close()
 
 ##let try multithreading
 
 def do_multithreading(dir_input=''):
     list_csv = get_list_csv_dir(dir_input)
     dir_out = get_output_directory()
-    for f in list_csv:
-        do_csv_file_in_dir_out_csv(f,dir_out)
-    # do_csv_file_in_dir_out_csv(list_csv[1], dir_out)
-    # do_csv_file_in_dir_out_csv(list_csv[2], dir_out)
+    # for f in list_csv:
+    #     do_csv_file_in_dir_out_csv(f,dir_out)
+    do_csv_file_in_dir_out_csv(list_csv[1], dir_out)
+    do_csv_file_in_dir_out_csv(list_csv[2], dir_out)
+    do_csv_file_in_dir_out_csv(list_csv[5], dir_out)
+    do_csv_file_in_dir_out_csv(list_csv[6], dir_out)
+    do_csv_file_in_dir_out_csv(list_csv[27], dir_out)
+    do_csv_file_in_dir_out_csv(list_csv[28], dir_out)
 
     # try:
     #     from multiprocessing import Pool

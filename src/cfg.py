@@ -46,5 +46,6 @@ csv_dict = {'FULLNAME': '',
                 'NAME': '',
                 'DISK': '',
                 'CNT': '',
-                'COLUMNS': ''
+                'COLUMNS': '',
+                'MAXDELIM': ''
                 }
