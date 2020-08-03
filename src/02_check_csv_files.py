@@ -271,7 +271,7 @@ def do_multithreading(dir_input=''):
     list_csv = get_list_csv_dir(dir_input)
     dir_out = get_output_directory()
     for f in list_csv:
-        do_csv_file_in_dir_out_csv(f,dir_out)
+        do_csv_file_in_dir_out_csv(f, dir_out)
     # do_csv_file_in_dir_out_csv(list_csv[1], dir_out)
     # do_csv_file_in_dir_out_csv(list_csv[2], dir_out)
     # do_csv_file_in_dir_out_csv(list_csv[5], dir_out)
